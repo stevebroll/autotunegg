@@ -57,9 +57,63 @@ List autotune_gg(arma::mat xin,
     stop("alpha must be strictly between 0 and 1");
   }
 
+  // STANDARDIZATION ----
+  arma::field<arma::mat> Rfield(gmax), Qfield(gmax);
+  if(standardize) {
+    arma::mat Q, R;
+    for(int g = 0; g < gmax; g++) {
+      idx = arma::find(group == g);
+      arma::mat Q, R;
+      arma::qr_econ(Q, R, x.cols(idx));
+      x.cols(idx) = Q;
+      Qfield(g) = Q;
+      Rfield(g) = R;
+    }
+  }
+
+  double ymean = 0.0;
+  if(standardize_response) {
+    ymean = arma::mean(y);
+    y = y - ymean;
+  }
 
 
 
+
+
+  // TRANSFORM BACK TO ORIGINAL BASIS ----
+
+  if(standardize){
+    x = xin;
+    arma::vec beta_origscale = beta;
+    for(int g = 0; g < gmax; g++) {
+      idx = arma::find(group == g);
+      if(norm(beta(idx), 2) > 0){
+        arma::mat Q, R;
+        R = Rfield(g);
+        beta_origscale(idx) = R.i() * beta(idx);
+      }
+      beta = beta_origscale;
+    }
+  }
+
+  if(standardize_response){
+    y = y + ymean;
+  }
+
+  beta_iteration--;
+
+  if (trace_it) {
+    Rcout << "\nNo of predictor group significant for sigma estimation: " << vec_sig_beta_count[beta_iteration - 1] << std::endl;
+  }
+
+  arma::vec xmeans = mean(x,0).t();
+  double intercept_estimate = 0.0;
+  if(intercept) {
+    intercept_estimate = ymean - arma::dot(beta, xmeans);
+  }
+
+  double final_sigma = rev(sigma2_seq)[0];
 
 
 
