@@ -1,16 +1,17 @@
 Package: autotunegg
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
+Title: Autotune Group Lasso
+Version: 0.0.1
 Authors@R: c(
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
+      "Steve", "Broll",
+      email = "sbroll@umich.edu",
       role = c("aut", "cre")
     )
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
+Maintainer: Steve Broll <"sbroll@umich.edu">
+Description: Automatic tuning for group lasso penalized least squares regression.
+Avoids cross-validation, and estimates the residual noise variance.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
@@ -19,3 +20,5 @@ LinkingTo:
     Rcpp
 Imports: 
     Rcpp
+URL: https://github.com/stevebroll/autotunegg
+BugReports: https://github.com/stevebroll/autotunegg/issues
