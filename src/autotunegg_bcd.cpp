@@ -19,6 +19,43 @@ List autotune_gg(arma::mat xin,
                  short int active_iter_max = 100,
                  short int beta_iter_max = 100) {
 
+  // CHECKS ----
+  // Check if inputs xin, yin, and group are valid
+  arma::vec y; arma::mat x;
+  if(yin.is_vec()){
+    y = yin;
+  } else {
+    stop("y must be a numeric vector");
+  }
+
+  if(!group.is_vec()){
+    stop("group must be a numeric vector");
+  }
+
+  if(xin.is_colvec()){
+    stop("x must be a numeric matrix with at least 2 variables");
+  } else {
+    x = xin;
+  }
+
+
+  // Check x, y dimensions
+  int n = x.n_rows; int p = x.n_cols;
+  if(y.n_elem != x.n_rows){
+    stop("length of y does not match the number of rows in x");
+  }
+
+  // Check if group index is valid
+  if(group.n_elem != x.n_cols){
+    stop("Number of elements in group must equal the number of columns in x");
+  } else if (!group.is_sorted("ascend") || group(0) != 1){
+    stop("group should be a vector of non-decreasing consecutive integers starting with 1");
+  }
+
+  // Check valid significance level threshold
+  if(alpha <= 0 || alpha >= 1){
+    stop("alpha must be strictly between 0 and 1");
+  }
 
 
 
