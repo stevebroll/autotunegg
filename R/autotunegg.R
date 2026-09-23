@@ -2,6 +2,11 @@
 #'
 #' @name autotunegg
 #'
+#' @description
+#' A short description...
+#' Fits group lasso penalized least squares model over regulraization path
+#' determined by intermediate estimates of noise variance \eqn{\hat \sigma^2}.
+#'
 #' @param x Matrix of predictors, of dimension \eqn{n \times p} with \eqn{n}.
 #'  observations of \eqn{p} variables
 #' @param y Vector of responses, length \eqn{n}.
@@ -15,7 +20,7 @@
 #' @param standarize_response Whether Y is demeaned, default is \code{TRUE}.
 #' @param intercept Whether to include an intercept, default is \code{TRUE}.
 #' @param active Whether to implement active set selection. Default is \code{TRUE} when
-#' all groups have 5 or more membes, and \code{FALSE} otherwise.
+#' all groups have 5 or more members, and \code{FALSE} otherwise.
 #' @param trace_it Whether to print out iteration details, default is \code{FALSE}.
 #' @param sigma_tolerance Convergence termination tolerance for the initial
 #' tuning of \eqn{\sigma^2} and \eqn{\lambda}. Default is \eqn{1e-8}.
@@ -33,9 +38,35 @@
 #' is smaller than \eqn{\text{Var}(Y)}.
 #'
 #' @returns A list with final model fit as well as regularization path details.
+#'
 #' @export
 #'
-#'
+#' @examples
+#' # generate simple data
+#' library(autotunegg)
+#' set.seed(2026)
+#' n <- 100
+#' pg <- 10
+#' p <- pg*n
+#' groups <- rep(1:n, each = pg)
+#' # 2 target groups (beta = 1)
+#' s <- 2*pg
+#' beta <- 0; beta[groups == sample(unique(groups), 2)] = 1
+#' x <- matrix(rnorm(n*p,n,p))
+#' snr <- 4
+#' error.sd <- sqrt(sum(beta^2)/ snr)
+#' err <- rnorm(n, 0, error.sd)
+#' y <- x %*% beta + err
+#' fit <- autotunegg(x, y, groups, active = T, trace_it = T)
+#' # # plot beta's
+#' plot(beta, pch = 1)
+#' plot(fit$beta, pch = 16)
+#' # print confusion matrix
+#' table(beta == 1, fit$beta == 1)
+#' # Estimated \eqn{\hat \sigma^2} path vs empirical
+#' fit$CD.path.details$count_sig_beta
+#' var(err)
+
 autotunegg <- function(
     x,
     y,
