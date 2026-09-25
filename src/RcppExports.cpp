@@ -11,9 +11,9 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// autotunegg_bcd
-List autotunegg_bcd(arma::mat xin, arma::vec yin, arma::uvec group, float alpha, bool standardize, bool standardize_response, bool intercept, bool active, float tau, bool trace_it, double sigma_tolerance, double beta_tolerance, short int sigma_iter_max, short int active_iter_max, short int beta_iter_max);
-RcppExport SEXP _autotunegg_autotunegg_bcd(SEXP xinSEXP, SEXP yinSEXP, SEXP groupSEXP, SEXP alphaSEXP, SEXP standardizeSEXP, SEXP standardize_responseSEXP, SEXP interceptSEXP, SEXP activeSEXP, SEXP tauSEXP, SEXP trace_itSEXP, SEXP sigma_toleranceSEXP, SEXP beta_toleranceSEXP, SEXP sigma_iter_maxSEXP, SEXP active_iter_maxSEXP, SEXP beta_iter_maxSEXP) {
+// autotunegg_bcd_cpp
+List autotunegg_bcd_cpp(arma::mat xin, arma::vec yin, arma::uvec group, float alpha, bool standardize, bool standardize_response, bool intercept, bool active, float tau, bool trace_it, double sigma_tolerance, double beta_tolerance, short int sigma_iter_max, short int active_iter_max, short int beta_iter_max);
+RcppExport SEXP _autotunegg_autotunegg_bcd_cpp(SEXP xinSEXP, SEXP yinSEXP, SEXP groupSEXP, SEXP alphaSEXP, SEXP standardizeSEXP, SEXP standardize_responseSEXP, SEXP interceptSEXP, SEXP activeSEXP, SEXP tauSEXP, SEXP trace_itSEXP, SEXP sigma_toleranceSEXP, SEXP beta_toleranceSEXP, SEXP sigma_iter_maxSEXP, SEXP active_iter_maxSEXP, SEXP beta_iter_maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -32,13 +32,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< short int >::type sigma_iter_max(sigma_iter_maxSEXP);
     Rcpp::traits::input_parameter< short int >::type active_iter_max(active_iter_maxSEXP);
     Rcpp::traits::input_parameter< short int >::type beta_iter_max(beta_iter_maxSEXP);
-    rcpp_result_gen = Rcpp::wrap(autotunegg_bcd(xin, yin, group, alpha, standardize, standardize_response, intercept, active, tau, trace_it, sigma_tolerance, beta_tolerance, sigma_iter_max, active_iter_max, beta_iter_max));
+    rcpp_result_gen = Rcpp::wrap(autotunegg_bcd_cpp(xin, yin, group, alpha, standardize, standardize_response, intercept, active, tau, trace_it, sigma_tolerance, beta_tolerance, sigma_iter_max, active_iter_max, beta_iter_max));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_autotunegg_autotunegg_bcd", (DL_FUNC) &_autotunegg_autotunegg_bcd, 15},
+    {"_autotunegg_autotunegg_bcd_cpp", (DL_FUNC) &_autotunegg_autotunegg_bcd_cpp, 15},
     {NULL, NULL, 0}
 };
 

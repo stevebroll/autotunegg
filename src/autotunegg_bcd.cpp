@@ -3,7 +3,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List autotunegg_bcd(arma::mat xin,
+List autotunegg_bcd_cpp(arma::mat xin,
                  arma::vec yin,
                  arma::uvec group,
                  float alpha = 0.01,
