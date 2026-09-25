@@ -77,6 +77,50 @@ List autotune_gg(arma::mat xin,
     y = y - ymean;
   }
 
+
+
+  // INITIALIZATION ----
+
+  // Model parameters
+  arma::vec beta = arma::zeros(p), predmean = arma::zeros(p), predsd = arma::zeros(p);
+  arma::vec old_beta(p), beta_temp(p), beta_crit(p), partial_res_l2(gmax);
+  arma::vec r;
+  r = y;
+  double beta_l2norm, sigma2hat, error;
+  sigma2hat = arma::var(r);
+  int iter, k, psum;
+  arma::mat xg, Sigma;
+  arma::vec ytemp, betahat, yhat;
+  double f_stat, cutoff;
+
+  // Support and active sets
+  arma::ivec active_indices = seq_len(gmax) - 1;
+  IntegerVector support_set, old_support_set, active_set;
+  bool null_support = FALSE;
+  short int flag = 1, s;
+
+  // Path details
+  NumericVector vec_sig_beta_count(sigma_iter_max), sigma2_seq(sigma_iter_max);
+
+  // Lambda
+  double init_lambda, lambda_value, lambda_effective;
+
+  arma::vec temp(gmax);
+  for (int g = 0; g < gmax; g++) {
+    temp(g) = norm(x.cols(arma::find(group == g)).t() * y, 2) / sqrt(pg[g]);
+  }
+  init_lambda = max(temp);
+  lambda_value = init_lambda * (1.0  / (sigma2hat));
+
+  // Max no. of selected predictors -- UNDER REVIEW
+  int maxpredcount = 4 * std::min(p,n) / 5;
+
+  // Convergence parameters
+  error = arma::datum::inf;
+  int sigma_iteration = 1, beta_iteration = 1, active_set_size = 0,
+    active_iterations = 1, sg_active = 0, iterations_finding_beta = 0;
+
+
   // OUTER LOOP (SIGMA ESTIMATION) ----
 
   while(error > sigma_tolerance && sigma_iteration <= sigma_iter_max) {
