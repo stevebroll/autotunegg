@@ -3,7 +3,6 @@
 #' @name autotunegg
 #'
 #' @description
-#' A short description...
 #' Fits group lasso penalized least squares model over regulraization path
 #' determined by intermediate estimates of noise variance \eqn{\hat \sigma^2}.
 #'

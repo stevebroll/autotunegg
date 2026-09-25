@@ -43,7 +43,7 @@ lasso.}
 \item{intercept}{Whether to include an intercept, default is \code{TRUE}.}
 
 \item{active}{Whether to implement active set selection. Default is \code{TRUE} when
-all groups have 5 or more membes, and \code{FALSE} otherwise.}
+all groups have 5 or more members, and \code{FALSE} otherwise.}
 
 \item{trace_it}{Whether to print out iteration details, default is \code{FALSE}.}
 
@@ -71,5 +71,32 @@ is smaller than \eqn{\text{Var}(Y)}.}
 A list with final model fit as well as regularization path details.
 }
 \description{
-Fast and automatic tuning and fitting for group lasso penalized least squares
+Fits group lasso penalized least squares model over regulraization path
+determined by intermediate estimates of noise variance \eqn{\hat \sigma^2}.
+}
+\examples{
+# generate simple data
+library(autotunegg)
+set.seed(2026)
+n <- 100
+pg <- 10
+p <- pg*n
+groups <- rep(1:n, each = pg)
+# 2 target groups (beta = 1)
+s <- 2*pg
+beta <- 0; beta[groups == sample(unique(groups), 2)] = 1
+x <- matrix(rnorm(n*p,n,p))
+snr <- 4
+error.sd <- sqrt(sum(beta^2)/ snr)
+err <- rnorm(n, 0, error.sd)
+y <- x \%*\% beta + err
+fit <- autotunegg(x, y, groups, active = T, trace_it = T)
+# # plot beta's
+plot(beta, pch = 1)
+plot(fit$beta, pch = 16)
+# print confusion matrix
+table(beta == 1, fit$beta == 1)
+# Estimated \eqn{\hat \sigma^2} path vs empirical
+fit$CD.path.details$count_sig_beta
+var(err)
 }
