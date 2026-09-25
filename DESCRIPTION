@@ -10,8 +10,7 @@ Authors@R: c(
     )
   )
 Maintainer: Steve Broll <"sbroll@umich.edu">
-Description: Automatic tuning for group lasso penalized least squares regression.
-Avoids cross-validation, and estimates the residual noise variance.
+Description: Automatic tuning for group lasso penalized least squares regression. Avoids cross-validation, and estimates the residual noise variance.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
@@ -20,5 +19,5 @@ LinkingTo:
     Rcpp
 Imports: 
     Rcpp
-URL: https://github.com/stevebroll/autotunegg
+URL: https://github.com/stevebroll/autotunegg, https://stevebroll.github.io/autotunegg/
 BugReports: https://github.com/stevebroll/autotunegg/issues
