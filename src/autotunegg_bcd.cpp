@@ -3,7 +3,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List autotune_gg(arma::mat xin,
+List autotunegg_bcd(arma::mat xin,
                  arma::vec yin,
                  arma::uvec group,
                  float alpha = 0.01,
@@ -207,6 +207,108 @@ List autotune_gg(arma::mat xin,
   }
 
   sigma_iteration--;
+
+
+  if(support_set.size() == 0) {
+    null_support = TRUE;
+    if(sigma_iteration >= 2) {
+      sigma2hat = sigma2_seq[sigma_iteration - 2];
+    } else {
+      sigma2hat = var(y) / 10;
+    }
+  }
+
+  if (sigma_iteration < sigma_iter_max) {
+    vec_sig_beta_count = vec_sig_beta_count[Range(0, sigma_iteration - 1)];
+    sigma2_seq = sigma2_seq[Range(0, sigma_iteration - 1)];
+  }
+
+  lambda_effective = lambda_value * sigma2hat;
+  error = R_PosInf;
+  active_set = support_set;
+  s = support_set.size();
+  old_beta = beta;
+  psum = 0;
+  NumericVector act_pred_count(active_iter_max);
+
+  if(active){
+    r = y, beta.zeros();
+    for(int g = 0; g < s; g++){
+      gactive = active_indices[g];
+      idx = arma::find(group == gactive);
+      beta(idx) = old_beta(idx);
+    }
+    r = r - x * (beta);
+
+    while(active_iterations <= active_iter_max){
+      beta_iteration = 1;
+      error = R_PosInf;
+      while(error > beta_tolerance && beta_iteration <= beta_iter_max) {
+        old_beta = beta;
+        psum = 0;
+        for(int g = 0; g < gmax; g++){
+          gactive = active_indices[g];
+          idx = arma::find(group == gactive);
+          xg = x.cols(idx);
+          beta_temp(idx) = (xg.t() * r) + beta(idx);
+          beta_l2norm = norm(beta_temp(idx),2);
+          double penscale = sqrt(pg[gactive]) * lambda_effective / beta_l2norm;
+          beta(idx) = std::max((1 - penscale), 0.0) * beta_temp(idx);
+
+          r = r - (xg * (beta(idx) - old_beta(idx)));
+        }
+        beta_crit = abs(beta - old_beta)/ (1 + abs(beta));
+        error = beta_crit.max();
+        beta_iteration++;
+      }
+      iterations_finding_beta = iterations_finding_beta + --beta_iteration;
+      act_pred_count[active_iterations - 1] = active_set.size();
+
+      sg_active = 0;
+      active_set_size = active_set.size();
+      int j = active_set_size;
+      gactive = active_indices[j];
+      psum = psum + pg[gactive];
+
+      while(psum < p){
+        idx = arma::find(group == gactive);
+        arma::mat xg = x.cols(idx);
+
+        beta_l2norm = norm(xg * xg.t() * r,2);
+        if(beta_l2norm >  (sqrt(n) * sqrt(pg[gactive]) * lambda_effective)){
+          active_set.push_back(gactive);
+          sg_active++;
+        }
+
+        j++;
+        gactive = active_indices[j];
+        psum = psum + pg[gactive];
+      }
+      if(sg_active == 0){
+        break;
+      }
+      active_iterations++;
+    }
+  } else {
+    while(error > beta_tolerance && beta_iteration <= beta_iter_max) {
+      old_beta = beta;
+      for(int g = 0; g < gmax; g++){
+        gactive = active_indices[g];
+        idx = arma::find(group == gactive);
+        xg = x.cols(idx);
+        beta_temp(idx) = (xg.t() * r) + beta(idx);
+        beta_l2norm = norm(beta_temp(idx),2);
+        double penscale = sqrt(pg[gactive]) * lambda_effective / beta_l2norm;
+        beta(idx) = std::max((1 - penscale), 0.0) * beta_temp(idx);
+        r = r - (xg * (beta(idx) - old_beta(idx)));
+      }
+
+      beta_crit = abs(beta - old_beta)/ (1 + abs(beta));
+      error = beta_crit.max();
+      if (trace_it) {Rcout << "\rLambda converged, Iteration: " << sigma_iteration + beta_iteration << std::flush;}
+      beta_iteration++;
+    }
+  }
 
 
   // TRANSFORM BACK TO ORIGINAL BASIS ----
