@@ -57,6 +57,16 @@ List autotunegg_bcd(arma::mat xin,
     stop("alpha must be strictly between 0 and 1");
   }
 
+  // GROUP INDEXING ----
+  int gmax = group.max(), gactive;
+  group = group - 1;
+  arma::vec pg(gmax);
+  for(int g = 0; g < gmax; ++g){
+    pg(g) = arma::accu(group == g);
+  }
+  arma::uvec idx;  // index of columns in specified group
+
+
   // STANDARDIZATION ----
   arma::field<arma::mat> Rfield(gmax), Qfield(gmax);
   if(standardize) {
