@@ -9,9 +9,9 @@ autotunegg(
   y,
   group,
   alpha = 0.01,
-  standardize = T,
-  standarize_response = T,
-  intercept = T,
+  standardize = TRUE,
+  standardize_response = TRUE,
+  intercept = TRUE,
   active = NULL,
   trace_it = FALSE,
   sigma_tolerance = 1e-08,
@@ -38,7 +38,7 @@ Coefficients are transformed back to original scale after model convergence.
 Strongly recommended as this algorithm does not implement standardized group
 lasso.}
 
-\item{standarize_response}{Whether Y is demeaned, default is \code{TRUE}.}
+\item{standardize_response}{Whether Y is demeaned, default is \code{TRUE}.}
 
 \item{intercept}{Whether to include an intercept, default is \code{TRUE}.}
 
@@ -90,7 +90,7 @@ snr <- 4
 error.sd <- sqrt(sum(beta^2)/ snr)
 err <- rnorm(n, 0, error.sd)
 y <- x \%*\% beta + err
-fit <- autotunegg(x, y, groups, active = T, trace_it = T)
+fit <- autotunegg(x, y, groups, active = TRUE, trace_it = TRUE)
 # # plot beta's
 plot(beta, pch = 1)
 plot(fit$beta, pch = 16)

@@ -16,7 +16,7 @@
 #' Coefficients are transformed back to original scale after model convergence.
 #' Strongly recommended as this algorithm does not implement standardized group
 #' lasso.
-#' @param standarize_response Whether Y is demeaned, default is \code{TRUE}.
+#' @param standardize_response Whether Y is demeaned, default is \code{TRUE}.
 #' @param intercept Whether to include an intercept, default is \code{TRUE}.
 #' @param active Whether to implement active set selection. Default is \code{TRUE} when
 #' all groups have 5 or more members, and \code{FALSE} otherwise.
@@ -47,16 +47,16 @@
 #' n <- 100
 #' pg <- 10
 #' p <- pg*n
-#' groups <- rep(1:n, each = pg)
+#' group <- rep(1:n, each = pg)
 #' # 2 target groups (beta = 1)
 #' s <- 2*pg
-#' beta <- 0; beta[groups == sample(unique(groups), 2)] = 1
+#' beta <- 0; beta[group == sample(unique(group), 2)] = 1
 #' x <- matrix(rnorm(n*p,n,p))
 #' snr <- 4
 #' error.sd <- sqrt(sum(beta^2)/ snr)
 #' err <- rnorm(n, 0, error.sd)
 #' y <- x %*% beta + err
-#' fit <- autotunegg(x, y, groups, active = T, trace_it = T)
+#' fit <- autotunegg(x, y, group, active = TRUE, trace_it = TRUE)
 #' # # plot beta's
 #' plot(beta, pch = 1)
 #' plot(fit$beta, pch = 16)
@@ -71,9 +71,9 @@ autotunegg <- function(
     y,
     group,
     alpha = 0.01,
-    standardize = T,
-    standarize_response = T,
-    intercept = T,
+    standardize = TRUE,
+    standardize_response = TRUE,
+    intercept = TRUE,
     active = NULL,
     trace_it = FALSE,
     sigma_tolerance = 1e-8,
@@ -85,7 +85,7 @@ autotunegg <- function(
 ) {
 
   if(is.null(active)){
-    if(max(table(group >= 1))){
+    if(max(table(group >= 10))){
       active = TRUE
     } else{
       active = FALSE
@@ -96,8 +96,9 @@ autotunegg <- function(
     xin = x,
     yin = y,
     alpha = alpha,
+    group = group,
     standardize = standardize,
-    standarize_response = standarize_response,
+    standardize_response = standardize_response,
     intercept = intercept,
     active = active,
     trace_it = trace_it,
