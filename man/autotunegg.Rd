@@ -81,16 +81,17 @@ set.seed(2026)
 n <- 100
 pg <- 10
 p <- pg*n
-groups <- rep(1:n, each = pg)
+group <- rep(1:n, each = pg)
 # 2 target groups (beta = 1)
 s <- 2*pg
-beta <- 0; beta[groups == sample(unique(groups), 2)] = 1
-x <- matrix(rnorm(n*p,n,p))
+beta <- rep(0,p)
+beta[group == sample(unique(group), 2)] = 1
+x <- matrix(rnorm(n*p),n,p)
 snr <- 4
 error.sd <- sqrt(sum(beta^2)/ snr)
 err <- rnorm(n, 0, error.sd)
 y <- x \%*\% beta + err
-fit <- autotunegg(x, y, groups, active = TRUE, trace_it = TRUE)
+fit <- autotunegg(x, y, group, active = TRUE, trace_it = TRUE)
 # # plot beta's
 plot(beta, pch = 1)
 plot(fit$beta, pch = 16)

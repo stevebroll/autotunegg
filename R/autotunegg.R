@@ -50,8 +50,9 @@
 #' group <- rep(1:n, each = pg)
 #' # 2 target groups (beta = 1)
 #' s <- 2*pg
-#' beta <- 0; beta[group == sample(unique(group), 2)] = 1
-#' x <- matrix(rnorm(n*p,n,p))
+#' beta <- rep(0,p)
+#' beta[group == sample(unique(group), 2)] = 1
+#' x <- matrix(rnorm(n*p),n,p)
 #' snr <- 4
 #' error.sd <- sqrt(sum(beta^2)/ snr)
 #' err <- rnorm(n, 0, error.sd)

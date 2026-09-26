@@ -19,6 +19,7 @@ LinkingTo:
     Rcpp,
     RcppArmadillo
 Imports: 
-    Rcpp
+    Rcpp,
+    RcppArmadillo
 URL: https://github.com/stevebroll/autotunegg, https://stevebroll.github.io/autotunegg/
 BugReports: https://github.com/stevebroll/autotunegg/issues
