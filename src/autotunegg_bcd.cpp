@@ -4,20 +4,20 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 List autotunegg_bcd_cpp(arma::mat xin,
-                 arma::vec yin,
-                 arma::uvec group,
-                 float alpha = 0.01,
-                 bool standardize = true,
-                 bool standardize_response = true,
-                 bool intercept = true,
-                 bool active = false,
-                 float tau = 0.5,
-                 bool trace_it = false,
-                 double sigma_tolerance = 1e-8,
-                 double beta_tolerance = 1e-8,
-                 short int sigma_iter_max = 100,
-                 short int active_iter_max = 100,
-                 short int beta_iter_max = 100) {
+                        arma::vec yin,
+                        arma::uvec group,
+                        float alpha = 0.01,
+                        bool standardize = true,
+                        bool standardize_response = true,
+                        bool intercept = true,
+                        bool active = false,
+                        float tau = 0.5,
+                        bool trace_it = false,
+                        double sigma_tolerance = 1e-8,
+                        double beta_tolerance = 1e-8,
+                        short int sigma_iter_max = 100,
+                        short int active_iter_max = 100,
+                        short int beta_iter_max = 100) {
 
   // CHECKS ----
   // Check if inputs xin, yin, and group are valid
@@ -68,16 +68,14 @@ List autotunegg_bcd_cpp(arma::mat xin,
 
 
   // STANDARDIZATION ----
-  arma::field<arma::mat> Rfield(gmax), Qfield(gmax);
+  // arma::field<arma::mat> Rfield(gmax), Qfield(gmax);
   if(standardize) {
-    arma::mat Q, R;
     for(int g = 0; g < gmax; g++) {
       idx = arma::find(group == g);
+      arma::mat xg = x.cols(idx);
       arma::mat Q, R;
-      arma::qr_econ(Q, R, x.cols(idx));
+      arma::qr_econ(Q, R, xg);
       x.cols(idx) = Q;
-      Qfield(g) = Q;
-      Rfield(g) = R;
     }
   }
 
@@ -329,8 +327,9 @@ List autotunegg_bcd_cpp(arma::mat xin,
     for(int g = 0; g < gmax; g++) {
       idx = arma::find(group == g);
       if(norm(beta(idx), 2) > 0){
+        arma::mat xg = xin.cols(idx);
         arma::mat Q, R;
-        R = Rfield(g);
+        arma::qr_econ(Q, R, xg);
         beta_origscale(idx) = R.i() * beta(idx);
       }
       beta = beta_origscale;
