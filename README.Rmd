@@ -49,12 +49,7 @@ err <- rnorm(n, 0, error.sd)
 y <- x %*% beta + err
 fit <- autotunegg(x, y, group, active = T, trace_it = T)
 # # plot beta's
-plot(beta, pch = 1)
-plot(fit$beta, pch = 16)
-# print confusion matrix
-table(beta != 1, fit$beta != 0)
-# Estimated \eqn{\hat \sigma^2} path vs empirical
-fit$CD.path.details$count_sig_beta
-var(err)
+plot(beta, type = 'l', col = adjustcolor("blue", alpha.f = 0.3))
+points(fit$beta, pch = 16)
 ```
 

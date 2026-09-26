@@ -22,7 +22,7 @@ pak::pak("stevebroll/autotunegg")
 #>  
 #> → Package library at 'C:\Users\steve\AppData\Local\R\win-library\4.6'.
 #> ℹ No downloads are needed
-#> ✔ 1 pkg + 2 deps: kept 3 [8s]
+#> ✔ 1 pkg + 2 deps: kept 3 [7.3s]
 ```
 
 ## Example Usage:
@@ -45,32 +45,10 @@ err <- rnorm(n, 0, error.sd)
 y <- x %*% beta + err
 fit <- autotunegg(x, y, group, active = T, trace_it = T)
 #> Iteration: 1Iteration: 2
-#> No of predictor group significant for sigma estimation:
-#> Warning in autotunegg_bcd_cpp(xin = x, yin = y, alpha = alpha, group = group, :
-#> subscript out of bounds (index 23 >= vector size 2)
-#> 0
+#> No of predictor group significant for sigma estimation: 2
 # # plot beta's
-plot(beta, pch = 1)
+plot(beta, type = 'l', col = adjustcolor("blue", alpha.f = 0.3))
+points(fit$beta, pch = 16)
 ```
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" alt="" width="100%" />
-
-``` r
-plot(fit$beta, pch = 16)
-```
-
-<img src="man/figures/README-unnamed-chunk-3-2.png" alt="" width="100%" />
-
-``` r
-# print confusion matrix
-table(beta != 1, fit$beta != 0)
-#>        
-#>         FALSE TRUE
-#>   FALSE     0   10
-#>   TRUE    880  110
-# Estimated \eqn{\hat \sigma^2} path vs empirical
-fit$CD.path.details$count_sig_beta
-#> NULL
-var(err)
-#> [1] 2.485548
-```
